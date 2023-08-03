@@ -1,5 +1,11 @@
 "use client";
-import { Physics, useBox, usePlane, useSphere } from "@react-three/cannon";
+import {
+	Physics,
+	Triplet,
+	useBox,
+	usePlane,
+	useSphere,
+} from "@react-three/cannon";
 import Debug from "@react-three/cannon/dist/debug-provider";
 import { OrbitControls } from "@react-three/drei";
 import {
@@ -25,16 +31,17 @@ export default function Home() {
 				camera={{ position: [0, 5, 12], fov: 60 }}
 			>
 				<Lights />
-				{/* <gridHelper /> */}
 				<Physics
 					gravity={[0, -30, 0]}
 					defaultContactMaterial={{ restitution: 1.1 }}
 				>
 					<Ball />
-					<Enemy color={"hotpink"}  />
+					<Enemy color={"hotpink"} />
+					<Enemy color={"yellow"} position={[-2, 2, 0]} />
+					<Enemy color={"green"} position={[1, 5, 0]} />
+					<Enemy color={"red"} position={[-6, 2.5, 0]} />
 					<Paddle />
 				</Physics>
-				<OrbitControls enableRotate={false} />
 			</Canvas>
 		</>
 	);
@@ -89,13 +96,13 @@ function Paddle({
 
 function Enemy({
 	color,
-	position,
+	position = [2, 1, 0],
 	...props
 }: BoxBufferGeometryProps & Omit<MeshProps, "args">) {
-	const [ref, api] = useBox<Mesh>(() => ({ position: [2, 1, 0] }));
-
+	const [ref, api] = useBox<Mesh>(() => ({ position: position as Triplet }));
+	
 	return (
-		<mesh ref={ref} {...props} position={[2, 1, 0]}>
+		<mesh ref={ref} {...props} position={position}>
 			<boxGeometry args={[2, 0.5, 1]} />
 			<meshStandardMaterial color={color} />
 		</mesh>
